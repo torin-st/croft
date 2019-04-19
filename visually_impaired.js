@@ -1,5 +1,5 @@
 var processedTags = ['p', 'span', 'a', 'h1', 'h2', 'h3', 'li', 'td'];
-
+//test
 function addVisuallyImpairedPannel() {
     var parentElem = document.body;
     var wrapper = document.createElement('div');
