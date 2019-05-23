@@ -1,9 +1,10 @@
-var processedTags = ['p', 'span', 'a', 'h1', 'h2', 'h3', 'li', 'td'];
-//test
-function addVisuallyImpairedPannel() {
+var processedTags = ['div', 'p', 'span', 'a', 'h1', 'h2', 'h3', 'li', 'td'];
+var excludeIdPrefix = 'vi';
+
+function addVisuallyImpairedPanel() {
     var parentElem = document.body;
     var wrapper = document.createElement('div');
-    var pannel = document.createElement('div');
+    var panel = document.createElement('div');
     var fontContainer = document.createElement('dl');
     var fontDefinition = document.createElement('dt');
     var fontTahoma = document.createElement('dd');
@@ -29,92 +30,182 @@ function addVisuallyImpairedPannel() {
     var simpleModeDefinition = document.createElement('dt');
     var menuDefinitionStyle = 'float: left; margin-left:15px;';
     var menuValueStyle = 'float: left; font-weight:normal; margin-left:5px; padding: 0px 2px; border: 1px solid black;';
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;
 
-    wrapper.id = 'viPannelWrapper';
-    wrapper.style = 'position:fixed; z-index:9999; width: 100%; height:50px; background: rgb(157,157,157); background: linear-gradient(0deg, rgba(157,157,157,1) 0%, rgba(255,255,255,1) 53%);';
-    pannel.id = 'viPannel';
-    pannel.style = 'z-index:9999; width:100%; height:50px; margin: 0px auto; font-size:16px; font-weight:bold; display: table-cell; vertical-align: middle;';
+    wrapper.id = 'viPanelWrapper';
+    wrapper.style.position = 'fixed';
+    wrapper.style.left = '0px';
+    wrapper.style.top = '0px';
+    wrapper.style.zIndex = '9999';
+    wrapper.style.width = '100%';
+    wrapper.style.height = '50px';
+
+    panel.id = 'viPanel';
+    panel.style.zIndex = '9999';
+    panel.style.width = '100%';
+    panel.style.height = '50px';
+    panel.style.margin = '0px auto';
+    panel.style.fontSize = '16px';
+    panel.style.fontWeight = 'bold';
+    //some magic for IE 7
+    if (isIE) {
+        //gradient
+        wrapper.style.filter = 'progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#ffffff, endColorstr=#9d9d9d)';
+        //vertical-align
+        panel.style.marginTop = '14px';
+    } else {
+        wrapper.style.background = 'linear-gradient(0deg, rgba(157,157,157,1) 0%, rgba(255,255,255,1) 53%)';
+        panel.style.display =  'table-cell';
+        panel.style.verticalAlign = 'middle';
+    }
     //font
     fontContainer.id = 'viFontContainer';
-    fontContainer.style = 'display: inline;';
+    fontContainer.style.display = 'inline';
     fontDefinition.id = 'viFontDefinition';
-    fontDefinition.style = menuDefinitionStyle;
+    fontDefinition.style.float = 'left';
+    fontDefinition.style.marginLeft = '15px';
     fontDefinition.appendChild(document.createTextNode('Шрифт:'));
     fontTahoma.id = 'viFontTahoma';
-    fontTahoma.style = menuValueStyle;
+    fontTahoma.style.float = 'left';
+    fontTahoma.style.fontWeight = 'normal';
+    fontTahoma.style.marginLeft = '5px';
+    fontTahoma.style.padding = '0px 2px';
+    fontTahoma.style.border = '1px solid black';
     fontTahoma.onclick = function () { changeFont('tahoma') };
     fontTahoma.appendChild(document.createTextNode('Tahoma'));
     fontTimes.id = 'viFontTimes';
-    fontTimes.style = menuValueStyle;
+    fontTimes.style.float = 'left';
+    fontTimes.style.fontWeight = 'normal';
+    fontTimes.style.marginLeft = '5px';
+    fontTimes.style.padding = '0px 2px';
+    fontTimes.style.border = '1px solid black';
     fontTimes.onclick =  function () { changeFont('times') };
     fontTimes.appendChild(document.createTextNode('Times New Roman'));
     //font size
     fontSizeContainer.id = 'viFontSizeContainer';
-    fontSizeContainer.style = 'display: inline;';
+    fontSizeContainer.style.display = 'inline';
     fontSizeDefinition.id = 'viFontSizeDefinition';
-    fontSizeDefinition.style = menuDefinitionStyle;
+    fontSizeDefinition.style.float = 'left';
+    fontSizeDefinition.style.marginLeft = '15px';
     fontSizeDefinition.appendChild(document.createTextNode('Размер шрифта:'));
     fontSizeSmall.id = 'viFontSizeSmall';
-    fontSizeSmall.style = menuValueStyle;
+    fontSizeSmall.style.float = 'left';
+    fontSizeSmall.style.fontWeight = 'normal';
+    fontSizeSmall.style.marginLeft = '5px';
+    fontSizeSmall.style.padding = '0px 2px';
+    fontSizeSmall.style.border = '1px solid black';
     fontSizeSmall.onclick = function () { changeFontSize('small'); }
     fontSizeSmall.appendChild(document.createTextNode('+'));
     fontSizeMedium.id = 'viFontSizeMedium';
-    fontSizeMedium.style = menuValueStyle;
+    fontSizeMedium.style.float = 'left';
+    fontSizeMedium.style.fontWeight = 'normal';
+    fontSizeMedium.style.marginLeft = '5px';
+    fontSizeMedium.style.padding = '0px 2px';
+    fontSizeMedium.style.border = '1px solid black';
     fontSizeMedium.onclick =  function () { changeFontSize('medium'); }
     fontSizeMedium.appendChild(document.createTextNode('++'));
     fontSizeBig.id = 'viFontSizeBig';
-    fontSizeBig.style = menuValueStyle;
+    fontSizeBig.style.float = 'left';
+    fontSizeBig.style.fontWeight = 'normal';
+    fontSizeBig.style.marginLeft = '5px';
+    fontSizeBig.style.padding = '0px 2px';
+    fontSizeBig.style.border = '1px solid black';
     fontSizeBig.onclick = function () { changeFontSize('big'); }
     fontSizeBig.appendChild(document.createTextNode('+++'));
     //font color
     pageColorContainer.id = 'viPageColorContainer';
-    pageColorContainer.style = 'display: inline;';
+    pageColorContainer.style.display = 'inline';
     pageColorDefinition.id = 'viPageColorDefinition';
-    pageColorDefinition.style = menuDefinitionStyle;
+    pageColorDefinition.style.float = 'left';
+    pageColorDefinition.style.marginLeft = '15px';
     pageColorDefinition.appendChild(document.createTextNode('Цвета сайта:'));
     pageColorBW.id = 'viPageColorBW';
-    pageColorBW.style = menuValueStyle + ' color: black; background-color: white;';
+    pageColorBW.style.float = 'left';
+    pageColorBW.style.fontWeight = 'normal';
+    pageColorBW.style.marginLeft = '5px';
+    pageColorBW.style.padding = '0px 2px';
+    pageColorBW.style.border = '1px solid black';
+    pageColorBW.style.color = 'black';
+    pageColorBW.style.backgroundColor = 'white';
     pageColorBW.onclick = function () { changePageColor('black-white'); }
     pageColorBW.appendChild(document.createTextNode('Абв'));
     pageColorWB.id = 'viPageColorWB';
-    pageColorWB.style = menuValueStyle + ' color: white; background-color: black;';
+    pageColorWB.style.float = 'left';
+    pageColorWB.style.fontWeight = 'normal';
+    pageColorWB.style.marginLeft = '5px';
+    pageColorWB.style.padding = '0px 2px';
+    pageColorWB.style.border = '1px solid black';
+    pageColorWB.style.color = 'white';
+    pageColorWB.style.backgroundColor = 'black';
     pageColorWB.onclick = function () { changePageColor('white-black'); }
     pageColorWB.appendChild(document.createTextNode('Абв'));
     pageColorBB.id = 'viPageColorBB';
-    pageColorBB.style = menuValueStyle + ' color: midnightblue; background-color: lightblue;';
+    pageColorBB.style.float = 'left';
+    pageColorBB.style.fontWeight = 'normal';
+    pageColorBB.style.marginLeft = '5px';
+    pageColorBB.style.padding = '0px 2px';
+    pageColorBB.style.border = '1px solid black';
+    pageColorBB.style.color = 'midnightblue';
+    pageColorBB.style.backgroundColor = 'lightblue';
     pageColorBB.onclick = function () { changePageColor('blue-blue'); }
     pageColorBB.appendChild(document.createTextNode('Абв'));
     pageColorBrBi.id = 'viPageColorBrBi';
-    pageColorBrBi.style = menuValueStyle + ' color: saddlebrown; background-color: cornsilk;';
+    pageColorBrBi.style.float = 'left';
+    pageColorBrBi.style.fontWeight = 'normal';
+    pageColorBrBi.style.marginLeft = '5px';
+    pageColorBrBi.style.padding = '0px 2px';
+    pageColorBrBi.style.border = '1px solid black';
+    pageColorBrBi.style.color = 'saddlebrown';
+    pageColorBrBi.style.backgroundColor = 'cornsilk';
     pageColorBrBi.onclick = function () { changePageColor('brown-biege'); }
     pageColorBrBi.appendChild(document.createTextNode('Абв'));
     pageColorGB.id = 'viPageColorGB';
-    pageColorGB.style = menuValueStyle + ' color: yellowgreen; background-color: saddlebrown;';
+    pageColorGB.style.float = 'left';
+    pageColorGB.style.fontWeight = 'normal';
+    pageColorGB.style.marginLeft = '5px';
+    pageColorGB.style.padding = '0px 2px';
+    pageColorGB.style.border = '1px solid black';
+    pageColorGB.style.color = 'yellowgreen';
+    pageColorGB.style.backgroundColor = 'saddlebrown';
     pageColorGB.onclick = function () { changePageColor('green-brown'); }
     pageColorGB.appendChild(document.createTextNode('Абв'));
     //letter-spacing
     letterSpacingContainer.id = 'viLetterSpacingContainer';
-    letterSpacingContainer.style = 'display: inline;';
+    letterSpacingContainer.style.display = 'inline';
     letterSpacingDefinition.id = 'viLetterSpacingDefinition';
-    letterSpacingDefinition.style = menuDefinitionStyle;
+    letterSpacingDefinition.style.float = 'left';
+    letterSpacingDefinition.style.marginLeft = '15px';
     letterSpacingDefinition.appendChild(document.createTextNode('Межбуквенный интервал:'));
     letterSpacingStandart.id = 'viLetterSpacingStandart';
-    letterSpacingStandart.style = menuValueStyle;
+    letterSpacingStandart.style.float = 'left';
+    letterSpacingStandart.style.fontWeight = 'normal';
+    letterSpacingStandart.style.marginLeft = '5px';
+    letterSpacingStandart.style.padding = '0px 2px';
+    letterSpacingStandart.style.border = '1px solid black';
     letterSpacingStandart.onclick = function () { changeLetterSpacing('standart'); }
     letterSpacingStandart.appendChild(document.createTextNode('+'));
     letterSpacingMedium.id = 'viLetterSpacingMedium';
-    letterSpacingMedium.style = menuValueStyle;
+    letterSpacingMedium.style.float = 'left';
+    letterSpacingMedium.style.fontWeight = 'normal';
+    letterSpacingMedium.style.marginLeft = '5px';
+    letterSpacingMedium.style.padding = '0px 2px';
+    letterSpacingMedium.style.border = '1px solid black';
     letterSpacingMedium.onclick = function () { changeLetterSpacing('medium'); }
     letterSpacingMedium.appendChild(document.createTextNode('++'));
     letterSpacingBig.id = 'viLetterSpacingBig';
-    letterSpacingBig.style = menuValueStyle;
+    letterSpacingBig.style.float = 'left';
+    letterSpacingBig.style.fontWeight = 'normal';
+    letterSpacingBig.style.marginLeft = '5px';
+    letterSpacingBig.style.padding = '0px 2px';
+    letterSpacingBig.style.border = '1px solid black';
     letterSpacingBig.onclick = function () { changeLetterSpacing('big'); }
     letterSpacingBig.appendChild(document.createTextNode('+++'));
     //simple mode
     simpleModeContainer.id = 'viSimpleModeContainer';
-    simpleModeContainer.style = 'display: inline;';
+    simpleModeContainer.style.display = 'inline';
     simpleModeDefinition.id = 'viSimpleModeDefinition';
-    simpleModeDefinition.style = menuDefinitionStyle;
+    simpleModeDefinition.style.float = 'left';
+    simpleModeDefinition.style.marginLeft = '15px';
     simpleModeDefinition.onclick = function () { activateSimpleMode(); }
     simpleModeDefinition.appendChild(document.createTextNode('Закрыть'));
 
@@ -141,13 +232,13 @@ function addVisuallyImpairedPannel() {
 
     simpleModeContainer.appendChild(simpleModeDefinition);
 
-    pannel.appendChild(fontContainer);
-    pannel.appendChild(fontSizeContainer);
-    pannel.appendChild(pageColorContainer);
-    pannel.appendChild(letterSpacingContainer);
-    pannel.appendChild(simpleModeContainer);
+    panel.appendChild(fontContainer);
+    panel.appendChild(fontSizeContainer);
+    panel.appendChild(pageColorContainer);
+    panel.appendChild(letterSpacingContainer);
+    panel.appendChild(simpleModeContainer);
 
-    wrapper.appendChild(pannel);
+    wrapper.appendChild(panel);
     parentElem.insertBefore(wrapper, parentElem.firstChild);
 }
 
@@ -156,9 +247,12 @@ function addVisuallyImpairedButton() {
     var parentElem = document.body;
     image.id = 'viButton';
     image.onclick = function () { changeDisplayMode(); }
-    image.src = 'https://raw.githubusercontent.com/torin-st/croft/master/vimode.png';
-    //'обро пожаловать на наш сайт _ Офтальмологический центр _Крофт-Оптика__files/vimode.png';
-    image.style = 'position:fixed; z-index:9999; top:45px; right:50px; width: 100px;';
+    image.src = 'http://kroftoptica.ru/sites/all/themes/optica/images/vimode.png';
+    image.style.position = 'fixed';
+    image.style.zIndex = '9999';
+    image.style.top = '45px';
+    image.style.right = '50px';
+    image.style.width =  '100px';
     parentElem.insertBefore(image, parentElem.firstChild);
 }
 
@@ -166,20 +260,28 @@ function activateSimpleMode() {
     document.cookie = 'vi_mode=0';
     document.location.reload();
 }
-
-function preparePage() { //hide some elements, set up some margins and paddings
-    document.getElementsByClassName('big_img').item(0).style.display = 'none';
-    document.getElementsByClassName('map').item(0).style.display = 'none';
-    document.getElementsByClassName('menu').item(0).style.marginTop = '50px';
-    document.getElementsByClassName('menu').item(0).style.marginBottom = '60px';
-    document.getElementsByClassName('fon_big').item(0).style.paddingTop = '50px';
+//hide some elements, set up some margins and paddings
+function preparePage() {
+    $('.big_img').css('display', 'none');
+    $('.map').css('display', 'none');
+    $('.menu').css('marginTop', '50px');
+    $('.menu').css('marginBottom', '60px');
+    $('.fon_big').css('paddingTop', '50px');
+    $('.shadow').css('background', 'none');
+    $('.fon_content').css('background', 'none');
+    $('.fon_content2').css('background', 'none');
+    $('.footer').css('background', 'none');
+    $('.header_blok h3').css('background', 'none');
+    $('#block-block-3 h3').html('Ст. Оскол');
+    $('.left h3').css('background', 'none');
+    $('.menu .active a').css('background', 'none');
 }
 
 function activateVisuallyImpairedMode() {
     document.cookie = 'vi_mode=1';
-    document.getElementById('viButton').remove();
+    $('#viButton').remove();
     preparePage();
-    addVisuallyImpairedPannel();
+    addVisuallyImpairedPanel();
 }
 
 function changeDisplayMode() {
@@ -245,6 +347,9 @@ function changeFont(font) {
     for (var i = 0; i < processedTags.length; i++) {
         var elements = document.getElementsByTagName(processedTags[i]);
         for (var j = 0; j < elements.length; j++) {
+            if (elements.item(j).id.slice(0, 2) == excludeIdPrefix) {
+                continue;
+            }
             elements.item(j).style.fontFamily = appendStyle;
         }
     }
@@ -270,6 +375,9 @@ function changeFontSize(fontSize) {
     for (var i = 0; i < processedTags.length; i++) {
         var elements = document.getElementsByTagName(processedTags[i]);
         for (var j = 0; j < elements.length; j++) {
+            if (elements.item(j).id.slice(0, 2) == excludeIdPrefix) {
+                continue;
+            }
             elements.item(j).style.fontSize = appendStyle;
         }
     }
@@ -307,15 +415,14 @@ function changePageColor(pageColor) {
     for (var i = 0; i < processedTags.length; i++) {
         var elements = document.getElementsByTagName(processedTags[i]);
         for (var j = 0; j < elements.length; j++) {
+            if (elements.item(j).id.slice(0, 2) == excludeIdPrefix) {
+                continue;
+            }
             elements.item(j).style.color = appendColorStyle;
             elements.item(j).style.backgroundColor = appendBackgroungColorStyle;
         }
     }
 
-    var container = document.getElementsByClassName('fon_big')[0];
-    container.style.color = appendColorStyle;
-    container.style.backgroundColor = appendBackgroungColorStyle;
-    document.getElementsByClassName('menu').item(0).style.backgroundColor = appendBackgroungColorStyle;
     document.cookie = 'vi_pageColor=' + pageColor;
 }
 
@@ -337,6 +444,9 @@ function changeLetterSpacing(letterSpacing) {
     for (var i = 0; i < processedTags.length; i++) {
         var elements = document.getElementsByTagName(processedTags[i]);
         for (var j = 0; j < elements.length; j++) {
+            if (elements.item(j).id.slice(0, 2) == excludeIdPrefix) {
+                continue;
+            }
             elements.item(j).style.letterSpacing = appendStyle;
         }
     }
@@ -355,6 +465,4 @@ function getCookie(key) {
     }
 }
 
-window.onload = initDisplayMode();
-
-
+$(document).ready(function(){ initDisplayMode() });
